@@ -16,7 +16,7 @@ def extract_g_info(edges):
 
     
 
-main_body="""def parse(str):
+main_body_f=lambda x: "def "+x+"""(str):
     state=0
     output=""
     
@@ -25,7 +25,6 @@ main_body="""def parse(str):
 
 #generates the code for the transitions from a single states.takes one item from the  list given by extract_g_info
 def gen_state_if(info):
-        print info
         body="\n\tif (state=="+str(info[0])+"):"
         info=info[1]
         transition=lambda x:"\n\t\tif (c==\'"+x[1]+"\'):\n\t\t\tstate="+str(x[0])+"\n\t\t\tcontinue"
@@ -33,13 +32,13 @@ def gen_state_if(info):
         return body
 
 
+final_states=lambda states:"\n    if state in ["+','.join(map(str,states))+"]: return True\n    else: return False "
 
-
-
+gen_automata=lambda name,edges,fstates:main_body_f(name)+''.join(map(gen_state_if,extract_g_info(edges)))+final_states(fstates)
 
 if (__name__ == "__main__"):
         x=input("edges:")
-        main_body=main_body+''.join(map(gen_state_if,extract_g_info(x)))+"\n    if state==0: return \"success\"\n    else: return \"fail\" "
+        main_body=gen_automata("parse",x,[0])
         print main_body
         exec main_body        
         while (True) :
