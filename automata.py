@@ -1,5 +1,12 @@
 #!/usr/bin/python
 
+#input is of the form [(sourcestate,targetstate,chars),...]
+def gen_edge_list(description):
+        ret=[]
+        for i in description:
+                ret+=[(i[0],i[1],c) for c in i[2]]
+        return ret
+
 #given a list of edges of an automata,returns a list of tuples of nodes and outgoing edges
 def extract_g_info(edges):
 	nodes=[]
@@ -18,7 +25,7 @@ def extract_g_info(edges):
 
 main_body_f=lambda x: "def "+x+"""(str):
     state=0
-    output=""
+    
     
     for c in str:"""
 #+"return output"
@@ -34,7 +41,7 @@ def gen_state_if(info):
 
 final_states=lambda states:"\n    if state in ["+','.join(map(str,states))+"]: return True\n    else: return False "
 
-gen_automata=lambda name,edges,fstates:main_body_f(name)+''.join(map(gen_state_if,extract_g_info(edges)))+final_states(fstates)
+gen_automata=lambda name,edges,fstates:main_body_f(name)+''.join(map(gen_state_if,extract_g_info(gen_edge_list(edges))))+final_states(fstates)
 
 if (__name__ == "__main__"):
         x=input("edges:")
