@@ -28,7 +28,7 @@ def gen_state_if(info):
         body="\n\tif (state=="+str(info[0])+"):"
         info=info[1]
         transition=lambda x:"\n\t\tif (c==\'"+x[1]+"\'):\n\t\t\tstate="+str(x[0])+"\n\t\t\tcontinue"
-        body=body+''.join(map(transition,info))+"\n\t\treturn \"fail\""
+        body=body+''.join(map(transition,info))+"\n\t\treturn False"
         return body
 
 
