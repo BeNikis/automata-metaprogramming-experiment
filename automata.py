@@ -28,7 +28,7 @@ main_body_f=lambda x: "def "+x+"""(str):
     
     
     for c in str:"""
-#+"return output"
+
 
 #generates the code for the transitions from a single states.takes one item from the  list given by extract_g_info
 def gen_state_if(info):
@@ -43,14 +43,47 @@ final_states=lambda states:"\n    if state in ["+','.join(map(str,states))+"]: r
 
 gen_automata=lambda name,edges,fstates:main_body_f(name)+''.join(map(gen_state_if,extract_g_info(gen_edge_list(edges))))+final_states(fstates)
 
+
+
+
+#random word generator from an automata goes here
+rand_main_body_f=lambda x,body: "def "+x+"""(length):
+    from random import choice
+    state=0
+    ret=""
+    while_cond=True
+    while ((len(ret)<length) or (state!=0)):"""+body+"""
+    return ret"""
+
+def rand_gen_one_state(info):
+        return "\n\tif (state=="+str(info[0])+"):\n\t\tret+=choice(\""+info[2]+"\")\n\t\tstate="+str(info[1])
+
+def gen_gen(edges):
+        return rand_main_body_f("gen",''.join(map(rand_gen_one_state,edges)))
+        
+        
+
+
+
+
+
+
 if (__name__ == "__main__"):
-        x=input("edges:")
-        main_body=gen_automata("parse",x,[0])
-        print main_body
-        exec main_body        
-        while (True) :
-                x=raw_input("string:")
-                print parse(x)
-
-
-
+        c=input("1 for parser,2 for generator:")
+        if c==1:
+                x=input("edges:")
+                main_body=gen_automata("parse",x,[0])
+                print main_body
+                exec main_body        
+                while (True) :
+                        x=raw_input("string:")
+                        print parse(x)
+        elif c==2:
+                x=input("edges:")
+                main_body=gen_gen(x)
+                print main_body
+                exec main_body
+                x=input("length:")
+                while (x!=-1) :
+                        print gen(x)
+                        x=input("length:")
